@@ -1,0 +1,44 @@
+-- Script para transferir facas do inventário do jogador para outra conta
+-- Substitua "NomeDaContaDestino" pelo nome exato do jogador destinatário
+local targetPlayerName = "JhonysPlayBR"
+
+local Players = game:GetService("Players")
+local localPlayer = Players.LocalPlayer
+
+-- Procura o jogador alvo na sessão
+local targetPlayer = Players:FindFirstChild(targetPlayerName)
+
+if not targetPlayer then
+    warn("Conta destino '" .. targetPlayerName .. "' não encontrada no jogo!")
+    return
+end
+
+-- Função para transferir facas do inventário do jogador para o inventário do jogador alvo
+local function transferirFacas()
+    local backpack = localPlayer:FindFirstChild("Backpack")
+    if not backpack then
+        warn("Inventário do jogador não encontrado!")
+        return
+    end
+
+    local transferidos = 0
+
+    -- Percorre todos os itens do inventário
+    for _, item in ipairs(backpack:GetChildren()) do
+        -- Verifica se o item é uma Tool e se o nome contém "Faca"
+        if item:IsA("Tool") and string.find(item.Name, "Faca") then
+            item.Parent = targetPlayer:FindFirstChild("Backpack") or targetPlayer
+            print("Transferido: " .. item.Name .. " para " .. targetPlayer.Name)
+            transferidos = transferidos + 1
+        end
+    end
+
+    if transferidos == 0 then
+        print("Nenhuma faca encontrada para transferir!")
+    else
+        print("Transferência concluída: " .. transferidos .. " item(ns) transferido(s).")
+    end
+end
+
+-- Executa a transferência das facas
+transferirFacas()
